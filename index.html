@@ -2,12 +2,17 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Старый телевизор — 47 каналов</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#241608">
+<title>oldTV</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  html, body { height: 100%; }
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
 
   body {
     font-family: "Courier New", monospace;
@@ -15,12 +20,13 @@
       radial-gradient(ellipse at 50% 40%, #4a3520 0%, #241608 55%, #0a0603 100%);
     color: #e8dcc0;
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 30px 16px;
-    overflow-x: hidden;
+    padding: 12px;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body::before {
@@ -37,13 +43,23 @@
 
   /* ================= КОРПУС ================= */
   .tv {
+    --reserved: 260px;   /* запасаем больше места под нижнюю надпись */
+
     position: relative;
     z-index: 2;
-    width: min(960px, 100%);
+
+    width: min(
+      960px,
+      96vw,
+      calc((100dvh - var(--reserved)) * 4 / 3)
+    );
+
+    min-width: 260px;
+
     background:
       linear-gradient(165deg, #7a5128 0%, #5a3a18 35%, #3f2810 70%, #2c1a08 100%);
     border-radius: 40px;
-    padding: 34px 34px 26px;
+    padding: 30px 30px 46px;   /* увеличен нижний отступ */
     box-shadow:
       inset 0 3px 0 rgba(255,215,150,.18),
       inset 0 -4px 0 rgba(0,0,0,.6),
@@ -69,6 +85,26 @@
     );
   }
 
+  /* ===== НАДПИСЬ oldTV — ВНИЗУ КОРПУСА ===== */
+  .brand {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 13px;
+    letter-spacing: 7px;
+    font-weight: 700;
+    color: #ffce6a;
+    text-shadow:
+      0 0 8px rgba(255,180,60,.9),
+      0 0 18px rgba(255,140,40,.5);
+    z-index: 3;
+    user-select: none;
+    pointer-events: none;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
   /* ================= ЭКРАН ================= */
   .screen {
     position: relative;
@@ -89,6 +125,7 @@
     justify-content: center;
     padding: 6% 8%;
     text-align: center;
+    touch-action: pan-x;
   }
 
   .screen::after {
@@ -134,7 +171,6 @@
     98% { opacity: .4; }
   }
 
-  /* ===== ТЁМНЫЙ ПЕРЕХОД ===== */
   .static {
     position: absolute;
     inset: 0;
@@ -167,13 +203,13 @@
   }
 
   .logo {
-    width: clamp(64px, 12vw, 110px);
-    height: clamp(64px, 12vw, 110px);
+    width: clamp(48px, 11vw, 110px);
+    height: clamp(48px, 11vw, 110px);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: clamp(22px, 4vw, 38px);
+    font-size: clamp(18px, 3.6vw, 38px);
     font-weight: 800;
     color: #fff;
     margin-bottom: 3%;
@@ -184,9 +220,9 @@
   }
 
   .name {
-    font-size: clamp(20px, 3.4vw, 34px);
+    font-size: clamp(16px, 3vw, 34px);
     font-weight: 700;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     color: #cfffd0;
     text-shadow:
       0 0 8px rgba(120,255,140,.9),
@@ -195,11 +231,12 @@
     position: relative;
     z-index: 7;
     animation: appear .35s ease-out;
+    padding: 0 4px;
   }
 
   .category {
-    font-size: clamp(10px, 1.4vw, 14px);
-    letter-spacing: 5px;
+    font-size: clamp(9px, 1.2vw, 14px);
+    letter-spacing: 4px;
     text-transform: uppercase;
     color: #8fd8a3;
     opacity: .85;
@@ -219,14 +256,14 @@
     z-index: 7;
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 26px;
+    gap: 8px;
+    padding: 10px 22px;
     border-radius: 999px;
     background: linear-gradient(180deg, #d9cba8 0%, #b8a577 50%, #8a7a4e 100%);
     color: #2a1a08;
     font-family: "Courier New", monospace;
     font-weight: 800;
-    font-size: clamp(12px, 1.5vw, 15px);
+    font-size: clamp(10px, 1.3vw, 15px);
     letter-spacing: 2px;
     text-transform: uppercase;
     border: 2px solid #5a4420;
@@ -238,6 +275,7 @@
     transition: all .08s;
     animation: appear .35s ease-out;
     cursor: pointer;
+    touch-action: manipulation;
   }
 
   .watch:hover {
@@ -253,22 +291,22 @@
       0 2px 6px rgba(0,0,0,.5);
   }
 
-  .watch svg { width: 13px; height: 13px; fill: currentColor; }
+  .watch svg { width: 12px; height: 12px; fill: currentColor; }
 
   /* ================= ПАНЕЛЬ ================= */
   .panel {
-    margin-top: 26px;
+    margin-top: 20px;
     display: flex;
     align-items: center;
-    gap: 22px;
-    padding: 0 8px;
+    gap: 18px;
+    padding: 0 4px;
     position: relative;
     z-index: 2;
   }
 
   .speaker {
     flex: 1;
-    height: 46px;
+    height: 42px;
     border-radius: 8px;
     background:
       radial-gradient(circle at 8px 50%, #120802 3px, transparent 3.5px) 0 0/16px 100% repeat-x,
@@ -281,15 +319,15 @@
   .controls {
     display: flex;
     align-items: flex-end;
-    gap: 24px;
+    gap: 20px;
     flex-shrink: 0;
   }
 
   .channel-window {
-    width: 170px;
+    width: 150px;
     background: linear-gradient(180deg, #0d0a04 0%, #1a1206 100%);
     border-radius: 10px;
-    padding: 10px 12px;
+    padding: 8px 10px;
     box-shadow:
       inset 0 3px 8px rgba(0,0,0,.9),
       inset 0 -1px 0 rgba(255,200,140,.1),
@@ -310,15 +348,15 @@
   }
 
   .ch-num {
-    font-size: 10px;
-    letter-spacing: 4px;
+    font-size: 9px;
+    letter-spacing: 3px;
     color: #ff9a3c;
     text-shadow: 0 0 6px rgba(255,140,40,.9);
-    margin-bottom: 4px;
+    margin-bottom: 3px;
   }
 
   .ch-name {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     letter-spacing: 1px;
     color: #ffce6a;
@@ -338,14 +376,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     user-select: none;
   }
 
   .knob-wrap {
     position: relative;
-    width: 100px;
-    height: 100px;
+    width: 86px;
+    height: 86px;
     flex-shrink: 0;
   }
 
@@ -361,7 +399,7 @@
 
   .knob {
     position: absolute;
-    inset: 8px;
+    inset: 7px;
     border-radius: 50%;
     background: radial-gradient(circle at 35% 28%, #f3e6c4 0%, #c9b483 35%, #8a7448 70%, #4a3418 100%);
     box-shadow:
@@ -403,9 +441,9 @@
     content: "";
     position: absolute;
     left: 50%;
-    top: 7px;
+    top: 6px;
     width: 4px;
-    height: 22px;
+    height: 18px;
     background: #2a1a08;
     border-radius: 2px;
     transform: translateX(-50%);
@@ -413,8 +451,8 @@
   }
 
   .knob-title {
-    font-size: 9px;
-    letter-spacing: 3px;
+    font-size: 8px;
+    letter-spacing: 2px;
     color: #b39a72;
     text-transform: uppercase;
     white-space: nowrap;
@@ -423,7 +461,7 @@
 
   .knob-title .val {
     color: #ffce6a;
-    margin-left: 6px;
+    margin-left: 5px;
     text-shadow: 0 0 8px rgba(255,180,60,.9);
     font-weight: 700;
   }
@@ -432,11 +470,11 @@
     display: flex;
     gap: 2px;
     margin-top: 2px;
-    height: 6px;
+    height: 5px;
   }
 
   .vol-leds span {
-    width: 5px;
+    width: 4px;
     height: 100%;
     border-radius: 1px;
     background: #2a1a08;
@@ -458,8 +496,8 @@
     position: absolute;
     top: 14px;
     right: 22px;
-    width: 10px;
-    height: 10px;
+    width: 9px;
+    height: 9px;
     border-radius: 50%;
     background: #ff2a1a;
     box-shadow: 0 0 10px #ff2a1a, 0 0 20px #ff2a1a, inset 0 0 4px #7a0a00;
@@ -472,52 +510,259 @@
     80% { opacity: .35; }
   }
 
+  /* ================= КНОПКА ПОДЕЛИТЬСЯ ================= */
+  .share-btn {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 999;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid #8a7448;
+    background: linear-gradient(180deg, #2a1a08 0%, #140a02 100%);
+    color: #ffce6a;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+      inset 0 1px 0 rgba(255,215,150,.15),
+      0 6px 16px rgba(0,0,0,.7),
+      0 0 20px rgba(255,140,40,.25);
+    transition: transform .12s, box-shadow .12s, background .12s;
+    font-family: "Courier New", monospace;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .share-btn:hover {
+    background: linear-gradient(180deg, #3a240c 0%, #1f1106 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,215,150,.25),
+      0 6px 20px rgba(0,0,0,.8),
+      0 0 30px rgba(255,140,40,.45);
+  }
+
+  .share-btn:active {
+    transform: scale(.94);
+  }
+
+  .share-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(30, 20, 8, 0.96);
+    border: 2px solid #8a7448;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-family: "Courier New", monospace;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: #ffce6a;
+    text-transform: uppercase;
+    z-index: 1000;
+    box-shadow: 0 6px 20px rgba(0,0,0,.8), 0 0 30px rgba(255,140,40,.3);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s, transform .25s;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
   .fullscreen-hint {
     position: fixed;
-    bottom: 20px;
+    bottom: 22px;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(30, 20, 8, 0.95);
     border: 2px solid #8a7448;
     border-radius: 12px;
-    padding: 14px 22px;
+    padding: 12px 20px;
     font-family: "Courier New", monospace;
-    font-size: 14px;
+    font-size: 12px;
     letter-spacing: 2px;
     color: #ffce6a;
     text-transform: uppercase;
     cursor: pointer;
-    z-index: 999;
+    z-index: 998;
     box-shadow: 0 6px 20px rgba(0,0,0,.8), 0 0 40px rgba(255,140,40,.3);
     display: none;
     animation: appear .4s ease-out;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .fullscreen-hint:hover {
     background: rgba(50, 35, 15, 0.98);
-    box-shadow: 0 6px 24px rgba(0,0,0,.9), 0 0 60px rgba(255,140,40,.5);
   }
 
   .fullscreen-hint.show { display: block; }
 
+  /* ================= ПЛАНШЕТ ================= */
   @media (max-width: 860px) {
-    .tv { padding: 22px 18px 20px; border-radius: 28px; }
-    .panel { flex-wrap: wrap; gap: 18px; }
+    .tv {
+      --reserved: 320px;
+      padding: 24px 20px 40px;
+      border-radius: 28px;
+      min-width: 240px;
+    }
+    .tv::before { border-radius: 28px; }
+
+    .brand {
+      font-size: 11px;
+      letter-spacing: 5px;
+      bottom: 12px;
+    }
+    .power { top: 12px; right: 18px; width: 8px; height: 8px; }
+
+    .panel {
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: center;
+    }
     .speaker { display: none; }
-    .controls { width: 100%; justify-content: space-between; gap: 14px; flex-wrap: wrap; align-items: center; }
-    .channel-window { width: 140px; }
-    .knob-wrap { width: 78px; height: 78px; }
-    .knob-title { font-size: 8px; letter-spacing: 2px; }
+
+    .controls {
+      width: 100%;
+      justify-content: space-around;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .channel-window {
+      width: 130px;
+      padding: 7px 10px;
+    }
+    .ch-name { font-size: 12px; }
+
+    .knob-wrap { width: 70px; height: 70px; }
+    .knob::after { height: 14px; top: 5px; width: 3px; }
+
+    .share-btn { width: 40px; height: 40px; }
+    .share-btn svg { width: 17px; height: 17px; }
   }
 
+  /* ================= ТЕЛЕФОН ================= */
   @media (max-width: 520px) {
-    .channel-window { width: 110px; font-size: 12px; }
+    body { padding: 8px; }
+
+    .tv {
+      --reserved: 280px;
+      padding: 18px 14px 32px;
+      border-radius: 22px;
+      min-width: 220px;
+      box-shadow:
+        inset 0 3px 0 rgba(255,215,150,.18),
+        inset 0 -4px 0 rgba(0,0,0,.6),
+        0 20px 40px rgba(0,0,0,.8),
+        0 0 0 2px #1a0f05,
+        0 0 0 4px #2a1a08;
+    }
+    .tv::before { border-radius: 22px; }
+
+    .brand {
+      font-size: 10px;
+      letter-spacing: 4px;
+      bottom: 10px;
+    }
+    .power { top: 10px; right: 14px; width: 7px; height: 7px; }
+
+    .screen {
+      border-radius: 16px / 22px;
+      box-shadow:
+        inset 0 0 40px rgba(0,0,0,1),
+        0 0 0 3px #140a02,
+        0 0 0 6px #2a1a08,
+        0 0 40px rgba(0,0,0,.9);
+    }
+    .scanlines, .flicker, .static, .screen::after {
+      border-radius: 16px / 22px;
+    }
+
+    .logo {
+      width: clamp(42px, 14vw, 76px);
+      height: clamp(42px, 14vw, 76px);
+      font-size: clamp(15px, 5vw, 26px);
+      margin-bottom: 4%;
+    }
+    .name { font-size: clamp(14px, 4.5vw, 22px); letter-spacing: 1px; }
+    .category { font-size: 8px; letter-spacing: 3px; margin-bottom: 5%; }
+
+    .watch {
+      padding: 8px 16px;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      gap: 6px;
+    }
+    .watch svg { width: 10px; height: 10px; }
+
+    .panel { margin-top: 12px; gap: 8px; }
+    .controls { gap: 8px; }
+
+    .channel-window { width: 100px; padding: 6px 8px; }
+    .ch-num { font-size: 8px; letter-spacing: 2px; margin-bottom: 2px; }
     .ch-name { font-size: 11px; }
-    .knob-wrap { width: 66px; height: 66px; }
+
+    .knob-wrap { width: 56px; height: 56px; }
+    .knob { inset: 5px; }
+    .knob::after { height: 11px; top: 4px; width: 2.5px; }
+    .knob-title { font-size: 7px; letter-spacing: 1.5px; }
+    .knob-title .val { margin-left: 3px; }
+
+    .vol-leds { height: 4px; gap: 1.5px; }
+    .vol-leds span { width: 3px; }
+
+    .share-btn { width: 36px; height: 36px; top: 10px; right: 10px; }
+    .share-btn svg { width: 15px; height: 15px; }
+
+    .fullscreen-hint { font-size: 10px; padding: 10px 16px; letter-spacing: 1.5px; }
+    .toast { font-size: 11px; padding: 8px 14px; letter-spacing: 1.5px; }
+  }
+
+  /* низкие экраны (landscape-телефон) */
+  @media (max-height: 480px) and (orientation: landscape) {
+    .tv {
+      --reserved: 215px;
+      padding: 16px 16px 28px;
+      border-radius: 22px;
+    }
+    .tv::before { border-radius: 22px; }
+    .brand { font-size: 9px; letter-spacing: 3px; bottom: 8px; }
+    .panel { margin-top: 10px; gap: 12px; }
+    .knob-wrap { width: 56px; height: 56px; }
+    .channel-window { width: 110px; }
+    .screen { border-radius: 18px / 24px; }
   }
 </style>
 </head>
 <body>
+
+<!-- Кнопка «Поделиться» -->
+<button class="share-btn" id="shareBtn" aria-label="Поделиться" title="Поделиться">
+  <svg viewBox="0 0 24 24">
+    <circle cx="18" cy="5" r="3"/>
+    <circle cx="6" cy="12" r="3"/>
+    <circle cx="18" cy="19" r="3"/>
+    <line x1="8.6" y1="10.6" x2="15.4" y2="6.4"/>
+    <line x1="8.6" y1="13.4" x2="15.4" y2="17.6"/>
+  </svg>
+</button>
+
+<!-- Всплывашка "ссылка скопирована" -->
+<div class="toast" id="toast">Ссылка скопирована</div>
 
 <div class="tv" id="tv">
   <div class="power"></div>
@@ -533,7 +778,7 @@
 
     <button class="watch" id="watch" type="button">
       <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-      Смотреть эфир
+      Смотреть
     </button>
   </div>
 
@@ -546,22 +791,20 @@
         <div class="ch-name" id="chName">Первый канал</div>
       </div>
 
-      <!-- КРУТИЛКА КАНАЛОВ (только колесо мыши) -->
       <div class="knob-block knob-block-channel">
         <div class="knob-wrap">
           <div class="knob-base"></div>
           <div class="knob channel-knob" id="knob"
-               title="Крутите колесо мыши над телевизором"></div>
+               title="Крутите колесо мыши / свайп по экрану"></div>
         </div>
         <div class="knob-title">Каналы</div>
       </div>
 
-      <!-- КРУТИЛКА ГРОМКОСТИ -->
       <div class="knob-block knob-block-volume">
         <div class="knob-wrap">
           <div class="knob-base"></div>
           <div class="knob volume-knob" id="volKnob"
-               title="Крутите колесо мыши над этой ручкой"></div>
+               title="Крутите колесо мыши / тяните пальцем"></div>
         </div>
         <div class="knob-title">Громкость <span class="val" id="volVal">5</span></div>
         <div class="vol-leds" id="volLeds">
@@ -571,6 +814,9 @@
       </div>
     </div>
   </div>
+
+  <!-- Надпись oldTV — ВНИЗУ корпуса -->
+  <div class="brand">oldTV</div>
 </div>
 
 <button class="fullscreen-hint" id="fsHint" type="button">
@@ -578,9 +824,8 @@
 </button>
 
 <script>
-  // ==== СПИСОК КАНАЛОВ — 47 штук с прямыми эфирами ====
+  // ==== СПИСОК КАНАЛОВ ====
   const channels = [
-    // === Общефедеральные ===
     { name: "Первый канал",    category: "Общий",         url: "https://www.1tv.ru/live",              color: "#ff3b1f", short: "1"   },
     { name: "Россия 1",        category: "Общий",         url: "https://smotrim.ru/live",              color: "#1d4ed8", short: "Р1"  },
     { name: "Россия 24",       category: "Новости",       url: "https://smotrim.ru/live",              color: "#1e40af", short: "24"  },
@@ -608,8 +853,6 @@
     { name: "Матч! Игра",      category: "Спорт",         url: "https://matchtv.ru/on-air",            color: "#15803d", short: "МИ"  },
     { name: "РБК",             category: "Новости",       url: "https://tv.rbc.ru/",                   color: "#dc2626", short: "РБК" },
     { name: "RT",              category: "Новости",       url: "https://www.rt.com/on-air/",           color: "#15803d", short: "RT"  },
-
-    // === Новые каналы (20+) ===
     { name: "Россия 2",        category: "Спорт",         url: "https://smotrim.ru/live",              color: "#1e40af", short: "Р2"  },
     { name: "2x2",             category: "Анимация",      url: "https://2x2tv.ru/",                    color: "#a855f7", short: "2×2" },
     { name: "СТС Love",        category: "Развлечения",   url: "https://ctc.ru/online/",               color: "#ec4899", short: "ЛЮБ" },
@@ -624,26 +867,16 @@
     { name: "Че (Поволжье)",   category: "Развлечения",   url: "https://chetv.ru/",                    color: "#0891b2", short: "ЧП"  },
     { name: "ТНТ4 (Сибирь)",   category: "Развлечения",   url: "https://tnt4.ru/",                     color: "#fbbf24", short: "Т4С" },
     { name: "Муз-ТВ (Урал)",   category: "Музыка",        url: "https://muz-tv.ru/",                   color: "#e11d48", short: "МУЗУ" },
-    { name: "Карусель (Восток)",category: "Детский",       url: "https://www.karusel-tv.ru/",           color: "#f59e0b", short: "КВ"  },
+    { name: "Карусель (Восток)",category: "Детский",      url: "https://www.karusel-tv.ru/",           color: "#f59e0b", short: "КВ"  },
     { name: "ОТР (Сибирь)",    category: "Общий",         url: "https://otr-online.ru/live",           color: "#0d9488", short: "ОТРС" },
     { name: "ТВ Центр (Юг)",   category: "Общий",         url: "https://www.tvc.ru/live/",             color: "#1e3a5f", short: "ТВЦЮ" },
     { name: "Рен ТВ (Урал)",   category: "Общий",         url: "https://ren.tv/live",                  color: "#e11d48", short: "РЕНУ" },
-    { name: "Спас (Поволжье)", category: "Религиозный",   url: "https://spastv.ru/",                   color: "#78350f", short: "СПП" },
-    { name: "Мир (Сибирь)",    category: "Общий",         url: "https://mir24.tv/live",                color: "#0284c7", short: "МС"  },
-    { name: "Мир 24 (Урал)",   category: "Новости",       url: "https://mir24.tv/live",                color: "#0369a1", short: "М24У" },
     { name: "Звезда (Восток)", category: "Военный",       url: "https://tvzvezda.ru/live/",            color: "#b91c1c", short: "ЗВ"  },
-    { name: "Пятый канал (Юг)",category: "Общий",         url: "https://www.5-tv.ru/live/",            color: "#dc2626", short: "5Ю"  },
-    { name: "Россия К (Сибирь)",category: "Культура",      url: "https://smotrim.ru/live",              color: "#7c3aed", short: "КС"  },
-    { name: "Россия 24 (Восток)",category: "Новости",      url: "https://smotrim.ru/live",              color: "#1e40af", short: "24В" },
+    { name: "Пятый (Юг)",      category: "Общий",         url: "https://www.5-tv.ru/live/",            color: "#dc2626", short: "5Ю"  },
     { name: "НТВ (Урал)",      category: "Общий",         url: "https://www.ntv.ru/air/ntv",           color: "#0ea5e9", short: "НТВУ" },
-    { name: "Первый канал (HD)",category: "Общий",         url: "https://www.1tv.ru/live",              color: "#ff3b1f", short: "1HD" },
-    { name: "Матч ТВ (Сибирь)",category: "Спорт",         url: "https://matchtv.ru/on-air",            color: "#16a34a", short: "МС"  },
-    { name: "РБК (Урал)",      category: "Новости",       url: "https://tv.rbc.ru/",                   color: "#dc2626", short: "РБКУ" },
-    { name: "RT (Восток)",     category: "Новости",       url: "https://www.rt.com/on-air/",           color: "#15803d", short: "RTВ" },
-    { name: "СТС (Юг)",        category: "Развлечения",   url: "https://ctc.ru/online/",               color: "#f59e0b", short: "СТСЮ" },
-    { name: "Домашний (Сибирь)",category: "Развлечения",  url: "https://domashniy.ru/",                color: "#c026d3", short: "ДС"  }
+    { name: "Первый (HD)",     category: "Общий",         url: "https://www.1tv.ru/live",              color: "#ff3b1f", short: "1HD" },
+    { name: "Матч ТВ (Сибирь)",category: "Спорт",         url: "https://matchtv.ru/on-air",            color: "#16a34a", short: "МС"  }
   ];
-  // ====================================================
 
   const $logo     = document.getElementById("logo");
   const $name     = document.getElementById("name");
@@ -659,8 +892,9 @@
   const $screen   = document.getElementById("screen");
   const $fsHint   = document.getElementById("fsHint");
   const $tv       = document.getElementById("tv");
+  const $shareBtn = document.getElementById("shareBtn");
+  const $toast    = document.getElementById("toast");
 
-  // ============ КАНАЛЫ ============
   let current = 0;
   let rotation = 0;
   const STEP = 360 / channels.length;
@@ -768,7 +1002,6 @@
     if (v !== volume) applyVolume(volToRot(v), v, true);
   }
 
-  // --- Перетаскивание ручки громкости ---
   let dragging = false;
   let dragStartAngle = 0;
   let dragStartRot = 0;
@@ -862,6 +1095,32 @@
     }
   }, { passive: false });
 
+  // ============ СВАЙПЫ ============
+  let swipeStartX = 0, swipeStartY = 0, swipeStartTime = 0, swiping = false;
+
+  $screen.addEventListener("touchstart", (e) => {
+    if (e.touches.length !== 1) return;
+    swipeStartX = e.touches[0].clientX;
+    swipeStartY = e.touches[0].clientY;
+    swipeStartTime = performance.now();
+    swiping = true;
+  }, { passive: true });
+
+  $screen.addEventListener("touchend", (e) => {
+    if (!swiping) return;
+    swiping = false;
+
+    const t = e.changedTouches[0];
+    const dx = t.clientX - swipeStartX;
+    const dy = t.clientY - swipeStartY;
+    const dt = performance.now() - swipeStartTime;
+
+    if (dt < 600 && Math.abs(dy) > 40 && Math.abs(dy) > Math.abs(dx)) {
+      if (dy < 0) changeChannel(1);
+      else        changeChannel(-1);
+    }
+  }, { passive: true });
+
   // ============ КЛАВИАТУРА ============
   document.addEventListener("keydown", (e) => {
     if (e.key === "ArrowRight" || e.key === "ArrowDown") changeChannel(1);
@@ -904,7 +1163,55 @@
     $fsHint.classList.remove("show");
   });
 
-  // Первый рендер
+  // ============ ПОДЕЛИТЬСЯ ============
+  function showToast(text) {
+    $toast.textContent = text;
+    $toast.classList.add("show");
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => $toast.classList.remove("show"), 1800);
+  }
+
+  async function doShare() {
+    const shareData = {
+      title: "oldTV",
+      text: "Смотри прямые эфиры каналов в стиле старого телевизора",
+      url: window.location.href
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (err) {
+        if (err && err.name === "AbortError") return;
+      }
+    }
+
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(window.location.href);
+        showToast("Ссылка скопирована");
+        return;
+      }
+    } catch (err) {}
+
+    try {
+      const inp = document.createElement("input");
+      inp.value = window.location.href;
+      inp.style.position = "fixed";
+      inp.style.opacity = "0";
+      document.body.appendChild(inp);
+      inp.select();
+      document.execCommand("copy");
+      document.body.removeChild(inp);
+      showToast("Ссылка скопирована");
+    } catch (err) {
+      showToast("Не удалось поделиться");
+    }
+  }
+
+  $shareBtn.addEventListener("click", doShare);
+
   renderContent(0);
 </script>
 
